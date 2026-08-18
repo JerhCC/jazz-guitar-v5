@@ -20,7 +20,7 @@ return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="c
 function Logo({ size = 42 }) {
 return (
 <svg width={size} height={size} viewBox="0 0 64 64" className="shrink-0" role="img" aria-label="Jazz Guitar Chords logo">
-<rect x="2" y="2" width="60" height="60" rx="14" fill="#0f2b27" stroke="#134e4a" strokeWidth="1.5" />
+<rect x="2" y="2" width="60" height="60" rx="14" fill="#3a0d24" stroke="#7a1a4d" strokeWidth="1.5" />
 <circle cx="50" cy="11" r="2.6" fill="none" stroke="#22d3ee" strokeWidth="1.6" />
 <rect x="13" y="16" width="38" height="3" rx="1.5" fill="#5eead4" />
 {[14, 21.2, 28.4, 35.6, 42.8, 50].map((x, i) => (
