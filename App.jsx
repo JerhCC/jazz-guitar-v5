@@ -624,6 +624,7 @@ playChord={playChord}
 </button>
 {micError && <p className="text-sm text-red-400">{micError}</p>}
 {liveName && <p className="text-xl font-bold text-cyan-300">{liveName}</p>}
+{liveNotes.length > 0 && <p className="text-sm text-slate-400">Notes: {liveNotes.map(p => NOTE_NAMES[p]).join(', ')}</p>}
 </>
 )}
 </div>
