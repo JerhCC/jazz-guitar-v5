@@ -311,7 +311,7 @@ const ctx = audio.getCtx();
 if (ctx.state === 'suspended') ctx.resume();
 const src = ctx.createMediaStreamSource(stream);
 const analyser = ctx.createAnalyser();
-analyser.fftSize = 2048;
+analyser.fftSize = 4096;
 src.connect(analyser);
 const r = micRef.current;
 r.ctx = ctx;
