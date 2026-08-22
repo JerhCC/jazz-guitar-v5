@@ -630,6 +630,27 @@ playChord={playChord}
 </div>
 </div>
 )}
+{tab === 'history' && (
+<div className="space-y-5">
+<h2 className="text-2xl font-bold text-orange-400">Jazz Guitar History</h2>
+<div className="bg-slate-800 rounded-xl p-5 border border-slate-700 space-y-3">
+<h3 className="text-lg font-bold text-cyan-400">Early Roots (1920s-30s)</h3>
+<p className="text-sm text-slate-400">Jazz guitar grew out of banjo traditions in New Orleans dance bands, where the guitar mostly played rhythm chords rather than melody. Players like Eddie Lang began pushing the instrument toward a solo voice, pairing it with violinists and horn players in small groups.</p>
+</div>
+<div className="bg-slate-800 rounded-xl p-5 border border-slate-700 space-y-3">
+<h3 className="text-lg font-bold text-cyan-400">Amplification & Swing (1930s-40s)</h3>
+<p className="text-sm text-slate-400">The electric guitar changed everything. Charlie Christian, playing with Benny Goodman, proved the guitar could solo like a horn - single-note lines, swung phrasing, real presence in a big band. This is the era that gave rise to many of the swing chord voicings still played today.</p>
+</div>
+<div className="bg-slate-800 rounded-xl p-5 border border-slate-700 space-y-3">
+<h3 className="text-lg font-bold text-cyan-400">Bebop & Chord-Melody (1940s-60s)</h3>
+<p className="text-sm text-slate-400">As bebop's harmony grew denser, guitarists like Tal Farlow and Jim Hall developed richer chord vocabularies - drop-2 and drop-3 voicings, extended 9ths and 13ths, chord-melody arrangements that let one guitarist state both harmony and tune at once. This is where much of the app's Voicings tab draws its language from.</p>
+</div>
+<div className="bg-slate-800 rounded-xl p-5 border border-slate-700 space-y-3">
+<h3 className="text-lg font-bold text-cyan-400">Modern Jazz Guitar</h3>
+<p className="text-sm text-slate-400">Players like Wes Montgomery (octaves and thumb-picked warmth), Joe Pass (solo chord-melody mastery), and later Pat Metheny broadened the vocabulary further, blending bebop roots with new harmonic and technical ideas that still shape how jazz guitar is taught today.</p>
+</div>
+</div>
+)}
 {tab === 'play-along' && (
 <div className="space-y-5">
 <h2 className="text-2xl font-bold text-orange-400">Play-Along</h2>
@@ -668,10 +689,7 @@ playChord={playChord}
 </div>
 {paPlaying && paChords.length > 0 && (
 <p className="text-lg font-bold text-orange-400">{paChords[paIndex]}</p>
-)}
-</div>
-</div>
-)}
+
 </div>
 </div>
 <footer className="sticky bottom-0 z-50 bg-slate-800 border-t border-slate-700">
@@ -684,6 +702,7 @@ playChord={playChord}
 { id: 'voicings', label: 'Voicings' },
 { id: 'scales', label: 'Scales' },
 { id: 'identify', label: 'Identify' },
+{ id: 'history', label: 'History' },
 { id: 'play-along', label: 'Play-Along' },
 ].map((t) => (
 <button key={t.id} onClick={() => setTab(t.id)} className={`flex-1 px-2 py-3 text-xs sm:text-sm font-semibold transition text-center ${tab === t.id ? 'bg-orange-500 text-white border-t-2 border-orange-400' : 'text-slate-400 hover:text-slate-200'}`}>
