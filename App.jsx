@@ -305,7 +305,7 @@ const noteList = [...new Set(pcs)].map((p) => NOTE_NAMES[p]).join(', ');
 setTextResult({ frets, names, noteList, error: null });
 };
 const startListening = () => {
-navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false } })
+navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } })
 .then((stream) => {
 const ctx = audio.getCtx();
 if (ctx.state === 'suspended') ctx.resume();
