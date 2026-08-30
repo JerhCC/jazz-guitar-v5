@@ -3,10 +3,14 @@ const A4 = 440;
 const MIN_MIDI = 38;
 const MAX_MIDI = 88;
 const MARGIN_DB = 15;
+const FLOOR_MIN = -95; // floor can never drift below this — prevents runaway drift
+const FLOOR_MAX = -40;
+const CONSECUTIVE_FRAMES_NEEDED = 3; // require sustained signal, not one blip
 
-let noiseFloor = -100;
+let noiseFloor = -80;
+let aboveThresholdCount = 0;
 export let lastPeakDb = -Infinity;
-export let lastNoiseFloor = -100;
+export let lastNoiseFloor = -80;
 
 function midiToFreq(midi) {
   return A4 * Math.pow(2, (midi - 69) / 12);
@@ -28,12 +32,21 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   }
   lastPeakDb = peakDb;
 
-  if (peakDb < noiseFloor + MARGIN_DB) {
-    noiseFloor = noiseFloor * 0.95 + peakDb * 0.05;
+  const isAboveFloor = peakDb >= noiseFloor + MARGIN_DB;
+
+  if (!isAboveFloor) {
+    // Quiet frame: nudge the floor toward it, but never below FLOOR_MIN
+    noiseFloor = Math.max(FLOOR_MIN, Math.min(FLOOR_MAX, noiseFloor * 0.95 + peakDb * 0.05));
     lastNoiseFloor = noiseFloor;
+    aboveThresholdCount = 0;
     return [];
   }
   lastNoiseFloor = noiseFloor;
+  aboveThresholdCount++;
+
+  // Require sustained signal across a few frames before trusting it —
+  // filters out single-frame spikes (taps, clicks, transient noise).
+  if (aboveThresholdCount < CONSECUTIVE_FRAMES_NEEDED) return [];
 
   const spectrum = new Float32Array(bins);
   for (let k = 0; k < bins; k++) spectrum[k] = Math.pow(10, data[k] / 20);
@@ -74,7 +87,7 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
       const f0 = midiToFreq(midi);
       if (f0 * 2 > sampleRate / 2) break;
       const fundamental = readMag(f0);
-      if (fundamental < globalMax * 0.06) continue;
+      if (fundamental < globalMax * 0.1) continue;
 
       const h2 = readMag(f0 * 2);
       const h3 = readMag(f0 * 3);
@@ -86,7 +99,7 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
       }
     }
 
-    if (bestMidi === -1 || bestScore < globalMax * 0.08) break;
+    if (bestMidi === -1 || bestScore < globalMax * 0.15) break;
 
     detected.push(bestMidi);
     subtractHarmonics(bestMidi);
