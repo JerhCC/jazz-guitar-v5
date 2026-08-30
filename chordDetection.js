@@ -7,6 +7,8 @@ const MIN_MIDI = 38; // D2 - a little below low E2, safety margin
 const MAX_MIDI = 88; // E6 - generous upper bound for high voicings
 const SILENCE_THRESHOLD_DB = -55; // below this, treat as no signal at all
 
+export let lastPeakDb = -Infinity;
+
 function midiToFreq(midi) {
   return A4 * Math.pow(2, (midi - 69) / 12);
 }
@@ -27,6 +29,7 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   for (let k = 1; k < bins; k++) {
     if (data[k] > peakDb) peakDb = data[k];
   }
+  lastPeakDb = peakDb;
   if (peakDb < SILENCE_THRESHOLD_DB) return [];
 
   const spectrum = new Float32Array(bins);
