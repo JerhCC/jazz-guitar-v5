@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChordDiagram } from './ChordDiagram';
 import { ScaleFretboard } from './ScaleFretboard';
 import { useGuitarAudio } from './audioEngine';
-import { chromaFromAnalyser } from './chordDetection';
+import { chromaFromAnalyser, lastPeakDb } from './chordDetection';
 import { NOTE_NAMES, pcSetFromFrets, identifyChord, parseFretInput } from './musicTheory';
 import { CHORDS, HARMONY } from './chords';
 import { PROGRESSIONS } from './progressions';
@@ -625,6 +625,7 @@ playChord={playChord}
 {micError && <p className="text-sm text-red-400">{micError}</p>}
 {liveName && <p className="text-xl font-bold text-cyan-300">{liveName}</p>}
 {liveNotes.length > 0 && <p className="text-sm text-slate-400">Notes: {liveNotes.map(p => NOTE_NAMES[p]).join(', ')}</p>}
+<p className="text-xs text-slate-600">Signal level: {lastPeakDb.toFixed(1)} dB</p>
 </>
 )}
 </div>
