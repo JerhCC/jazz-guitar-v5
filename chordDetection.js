@@ -1,13 +1,12 @@
 // chordDetection.js
-// Detects individual notes played on a guitar from live audio, then
-// derives the chord from that note set.
-
 const A4 = 440;
-const MIN_MIDI = 38; // D2 - a little below low E2, safety margin
-const MAX_MIDI = 88; // E6 - generous upper bound for high voicings
-const SILENCE_THRESHOLD_DB = -55; // below this, treat as no signal at all
+const MIN_MIDI = 38;
+const MAX_MIDI = 88;
+const MARGIN_DB = 15;
 
+let noiseFloor = -100;
 export let lastPeakDb = -Infinity;
+export let lastNoiseFloor = -100;
 
 function midiToFreq(midi) {
   return A4 * Math.pow(2, (midi - 69) / 12);
@@ -23,14 +22,18 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   const data = new Float32Array(bins);
   analyser.getFloatFrequencyData(data);
 
-  // Absolute silence gate: if nothing in range is meaningfully louder
-  // than typical room noise floor, report nothing rather than guessing.
   let peakDb = -Infinity;
   for (let k = 1; k < bins; k++) {
     if (data[k] > peakDb) peakDb = data[k];
   }
   lastPeakDb = peakDb;
-  if (peakDb < SILENCE_THRESHOLD_DB) return [];
+
+  if (peakDb < noiseFloor + MARGIN_DB) {
+    noiseFloor = noiseFloor * 0.95 + peakDb * 0.05;
+    lastNoiseFloor = noiseFloor;
+    return [];
+  }
+  lastNoiseFloor = noiseFloor;
 
   const spectrum = new Float32Array(bins);
   for (let k = 0; k < bins; k++) spectrum[k] = Math.pow(10, data[k] / 20);
