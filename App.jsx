@@ -689,7 +689,10 @@ playChord={playChord}
 </div>
 {paPlaying && paChords.length > 0 && (
 <p className="text-lg font-bold text-orange-400">{paChords[paIndex]}</p>
-
+)}
+</div>
+</div>
+)}
 </div>
 </div>
 <footer className="sticky bottom-0 z-50 bg-slate-800 border-t border-slate-700">
