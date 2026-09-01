@@ -320,11 +320,18 @@ r.stream = stream;
 r.analyser = analyser;
 setListening(true);
 setMicError('');
+const HOLD_MS = 500;
 const loop = () => {
 const pcs = chromaFromAnalyser(analyser, ctx.sampleRate);
-setLiveNotes(pcs);
-if (pcs.length >= 2) {
-const names = identifyChord(pcs, pcs[0]);
+const now = performance.now();
+if (pcs.length > 0) {
+r.lastGoodPcs = pcs;
+r.lastGoodTime = now;
+}
+const displayPcs = pcs.length > 0 ? pcs : ((now - (r.lastGoodTime || 0)) < HOLD_MS ? (r.lastGoodPcs || []) : []);
+setLiveNotes(displayPcs);
+if (displayPcs.length >= 2) {
+const names = identifyChord(displayPcs, displayPcs[0]);
 setLiveName(names.length ? names[0].name : '');
 } else {
 setLiveName('');
