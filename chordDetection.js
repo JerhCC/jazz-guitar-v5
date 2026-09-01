@@ -6,6 +6,7 @@ const MARGIN_DB = 8;
 const FLOOR_MIN = -95;
 const FLOOR_MAX = -40;
 const CONSECUTIVE_FRAMES_NEEDED = 3;
+const MIN_SEMITONE_SEPARATION = 2; // reject candidates this close to an already-accepted note
 
 let noiseFloor = -80;
 let aboveThresholdCount = 0;
@@ -82,6 +83,9 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
     let bestScore = 0;
 
     for (let midi = MIN_MIDI; midi <= MAX_MIDI; midi++) {
+      const tooClose = detected.some((d) => Math.abs(d - midi) < MIN_SEMITONE_SEPARATION);
+      if (tooClose) continue;
+
       const f0 = midiToFreq(midi);
       if (f0 * 2 > sampleRate / 2) break;
       const fundamental = readMag(f0);
