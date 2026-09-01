@@ -2,7 +2,7 @@
 const A4 = 440;
 const MIN_MIDI = 38;
 const MAX_MIDI = 88;
-const MARGIN_DB = 8; // lowered from 15 — your real chord peaked at -88.9dB
+const MARGIN_DB = 8;
 const FLOOR_MIN = -95;
 const FLOOR_MAX = -40;
 const CONSECUTIVE_FRAMES_NEEDED = 3;
@@ -37,11 +37,12 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   if (!isAboveFloor) {
     noiseFloor = Math.max(FLOOR_MIN, Math.min(FLOOR_MAX, noiseFloor * 0.95 + peakDb * 0.05));
     lastNoiseFloor = noiseFloor;
-    aboveThresholdCount = 0;
-    return [];
+    aboveThresholdCount = Math.max(0, aboveThresholdCount - 1);
+    if (aboveThresholdCount <= 0) return [];
+  } else {
+    lastNoiseFloor = noiseFloor;
+    aboveThresholdCount++;
   }
-  lastNoiseFloor = noiseFloor;
-  aboveThresholdCount++;
 
   if (aboveThresholdCount < CONSECUTIVE_FRAMES_NEEDED) return [];
 
