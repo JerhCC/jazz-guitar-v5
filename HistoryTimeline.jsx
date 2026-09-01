@@ -29,4 +29,32 @@ export function HistoryTimeline() {
                 <div className="px-5 py-4 flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold" style={{ color }}>{era.period}</p>
-                    
+                    <h3 className="text-lg font-bold text-slate-100 mt-0.5">{era.title}</h3>
+                    <p className="text-sm text-slate-400 mt-1">{era.summary}</p>
+                  </div>
+                  <div className="text-slate-500 text-xl shrink-0">{isOpen ? '−' : '+'}</div>
+                </div>
+                {isOpen && (
+                  <div className="px-5 pb-5 pt-1 border-t border-slate-700 space-y-3">
+                    <p className="text-sm text-slate-300 leading-relaxed">{era.details}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {era.keyArtists.map((artist) => (
+                        <span
+                          key={artist}
+                          className="text-xs font-semibold px-2 py-1 rounded-full bg-slate-700 text-slate-200"
+                        >
+                          {artist}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-500 italic">🎧 Listen for: {era.listenFor}</p>
+                  </div>
+                )}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
