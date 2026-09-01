@@ -2,10 +2,10 @@
 const A4 = 440;
 const MIN_MIDI = 38;
 const MAX_MIDI = 88;
-const MARGIN_DB = 15;
-const FLOOR_MIN = -95; // floor can never drift below this — prevents runaway drift
+const MARGIN_DB = 8; // lowered from 15 — your real chord peaked at -88.9dB
+const FLOOR_MIN = -95;
 const FLOOR_MAX = -40;
-const CONSECUTIVE_FRAMES_NEEDED = 3; // require sustained signal, not one blip
+const CONSECUTIVE_FRAMES_NEEDED = 3;
 
 let noiseFloor = -80;
 let aboveThresholdCount = 0;
@@ -35,7 +35,6 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   const isAboveFloor = peakDb >= noiseFloor + MARGIN_DB;
 
   if (!isAboveFloor) {
-    // Quiet frame: nudge the floor toward it, but never below FLOOR_MIN
     noiseFloor = Math.max(FLOOR_MIN, Math.min(FLOOR_MAX, noiseFloor * 0.95 + peakDb * 0.05));
     lastNoiseFloor = noiseFloor;
     aboveThresholdCount = 0;
@@ -44,8 +43,6 @@ export function findGuitarNotes(analyser, sampleRate, maxNotes = 6) {
   lastNoiseFloor = noiseFloor;
   aboveThresholdCount++;
 
-  // Require sustained signal across a few frames before trusting it —
-  // filters out single-frame spikes (taps, clicks, transient noise).
   if (aboveThresholdCount < CONSECUTIVE_FRAMES_NEEDED) return [];
 
   const spectrum = new Float32Array(bins);
